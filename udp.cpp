@@ -29,6 +29,7 @@ UdpMain::~UdpMain(){
 
 void UdpMain::enable_broadcast(){
     permission_broadcast = true;
+
     if(setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char *)&broadcast_flag, sizeof(broadcast_flag)) == 0){
         cout << "Broadcast enabled" << endl;
     }
