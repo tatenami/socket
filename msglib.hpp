@@ -28,6 +28,16 @@ namespace msglib{
         socklen_t   addr_len;
     };
 
+    class DstInfo{
+    public:
+        sockaddr_in addr_;
+        socklen_t   addr_len_;
+
+        DstInfo(uint16_t port_number);
+        DstInfo(std::string ip_address, uint16_t port_number);
+        ~DstInfo();
+    };
+
     /* --- [ SocketBase Class ] --- */
 
     class SocketBase{
@@ -58,8 +68,18 @@ namespace msglib{
         int send(void* msg, int size) const;
         int send(void* msg, int size, std::string ip_address, uint16_t port_number) const;
 
-        template <typename T> int send(T& msg) const{
+        template <typename T> 
+        int send(T& msg) const{
             int result_size = sendto(sd_.sock_fd, &msg, sizeof(T), 0, (struct sockaddr *)&(sd_.addr), sd_.addr_len);
+            if(result_size < 0){
+                std::cout << "fail to send data" << std::endl;
+            }
+            return result_size;
+        }
+
+        template <typename T> 
+        int send(T& msg, DstInfo& dst) const{
+            int result_size = sendto(sd_.sock_fd, &msg, sizeof(T), 0, (struct sockaddr *)&(dst.addr_), dst.addr_len_);
             if(result_size < 0){
                 std::cout << "fail to send data" << std::endl;
             }

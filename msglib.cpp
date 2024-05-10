@@ -6,6 +6,26 @@ const std::string msglib::loopback_address{"127.0.0.1"};
 const int msglib::non_blocking_flag{1};
 const int msglib::blocking_flag{0};
 
+/* --- [ DstInfo Class ] ---*/
+
+msglib::DstInfo::DstInfo(uint16_t port_number){
+    addr_.sin_family = AF_INET;
+    addr_.sin_addr.s_addr = inet_addr(loopback_address.c_str());
+    addr_.sin_port = htons(port_number);
+    addr_len_ = static_cast<socklen_t>(sizeof(addr_));
+}
+
+msglib::DstInfo::DstInfo(std::string ip_address, uint16_t port_number){
+    addr_.sin_family = AF_INET;
+    addr_.sin_addr.s_addr = inet_addr(ip_address.c_str());
+    addr_.sin_port = htons(port_number);
+    addr_len_ = static_cast<socklen_t>(sizeof(addr_));
+}
+
+msglib::DstInfo::~DstInfo(){
+
+}
+
 /* --- [ SocketBase Class ] ---*/
 
 void msglib::SocketBase::print_socket_info(){
@@ -72,13 +92,12 @@ int msglib::UDPSender::send(void* msg, int size) const{
     return result_size;
 }
 
-
 int msglib::UDPSender::send(void* msg, int size, std::string ip_address, uint16_t port_number) const{
     sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = inet_addr(ip_address.c_str());
     addr.sin_port = htons(port_number);
-    return sendto(sd_.sock_fd, msg, size, 0, (struct sockaddr *)&(sd_.addr), sd_.addr_len);
+    return sendto(sd_.sock_fd, msg, size, 0, (struct sockaddr *)&(addr), static_cast<socklen_t>(sizeof(addr)));
 }
 
 /* --- [ UDPReceiver Class ] --- */
