@@ -22,6 +22,15 @@ msglib::SocketBase::~SocketBase(){
     std::cout << "close socket" << std::endl;
 }
 
+void msglib::SocketBase::set_socket(int sock_type, int protocol, 
+                                    std::string ip_address, uint16_t port_number){
+    sd_.sock_fd = socket(AF_INET, sock_type, protocol);
+    sd_.addr.sin_family = AF_INET;
+    sd_.addr.sin_addr.s_addr = inet_addr(ip_address.c_str());
+    sd_.addr.sin_port = htons(port_number);
+    sd_.addr_len = static_cast<socklen_t>(sizeof(sd_.addr));
+}
+
 /* --- [ UDPSender Class ] ---*/
 
 void msglib::UDPSender::set_socket(std::string ip_address, uint16_t port_number){

@@ -37,12 +37,12 @@ namespace msglib{
         uint16_t    port_;
 
     protected:
-        virtual void set_socket(std::string ip_address, uint16_t port_number) = 0;
+        void set_socket(int sock_type, int protocol, std::string ip_address, uint16_t port_number);
         void print_socket_info();
 
     public:
         SocketBase(std::string ip_address, uint16_t port_number);
-        virtual ~SocketBase();
+        virtual ~SocketBase() = 0;
     };
 
     /* --- [ UDP Classes ] ---*/
