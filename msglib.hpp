@@ -20,8 +20,6 @@ namespace msglib{
     extern const int non_blocking_flag;
     extern const int blocking_flag;
 
-        
-
     /* --- [ Basic Datas ] ---*/
 
     class DstInfo{
@@ -96,10 +94,14 @@ namespace msglib{
         int get_sender_port();
         int receive(void *buf, int size);
 
+        template <typename T> int receive(T& buf){
+            socklen_t addr_len = sizeof(sender_addr_);
+            return recvfrom(sd_.sock_fd, &buf, sizeof(T), 0, (struct sockaddr *)&sender_addr_, &addr_len);
+        }
+
         template <typename T> int receive(T* buf){
             socklen_t addr_len = sizeof(sender_addr_);
-            int result_size = recvfrom(sd_.sock_fd, buf, sizeof(T), 0, (struct sockaddr *)&sender_addr_, &addr_len);
-            return result_size;
+            return recvfrom(sd_.sock_fd, buf, sizeof(T), 0, (struct sockaddr *)&sender_addr_, &addr_len);
         }
     };
 
