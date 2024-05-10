@@ -22,15 +22,6 @@ msglib::SocketBase::~SocketBase(){
     std::cout << "close socket" << std::endl;
 }
 
-/* --- [ DstInfo class ] ---*/
-
-msglib::DstInfo::DstInfo(std::string ip_address, uint16_t port_number){
-    addr_.sin_family = AF_INET;
-    addr_.sin_addr.s_addr = inet_addr(ip_address.c_str());
-    addr_.sin_port = htons(port_number);
-    addr_len_ = sizeof(addr_);
-}
-
 /* --- [ UDPSender Class ] ---*/
 
 void msglib::UDPSender::set_socket(std::string ip_address, uint16_t port_number){
@@ -57,10 +48,6 @@ msglib::UDPSender::UDPSender(std::string ip_address, uint16_t port_number):
     print_socket_info();
 }
 
-void msglib::UDPSender::set_dst_info(DstInfo new_dst){
-    set_socket(std::string(inet_ntoa(new_dst.addr_.sin_addr)), static_cast<int>(ntohs(new_dst.addr_.sin_port)));
-}
-
 void msglib::UDPSender::set_dst_info(std::string ip_address, uint16_t port_number){
     sd_.addr.sin_family = AF_INET;
     sd_.addr.sin_addr.s_addr = inet_addr(ip_address.c_str());
@@ -76,9 +63,6 @@ int msglib::UDPSender::send(void* msg, int size) const{
     return result_size;
 }
 
-int msglib::UDPSender::send(void* msg, int size, DstInfo dst) const{
-    return sendto(sd_.sock_fd, msg, size, 0, (struct sockaddr *)&(dst.addr_), dst.addr_len_);
-}
 
 int msglib::UDPSender::send(void* msg, int size, std::string ip_address, uint16_t port_number) const{
     sockaddr_in addr;

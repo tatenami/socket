@@ -22,15 +22,6 @@ namespace msglib{
 
     /* --- [ Basic Datas ] ---*/
 
-    class DstInfo{
-    public:
-        sockaddr_in addr_;
-        int         addr_len_;
-
-    public:
-        DstInfo(std::string ip_address, uint16_t port_number);
-    };
-
     struct socket_data{
         int         sock_fd;
         sockaddr_in addr;
@@ -63,10 +54,8 @@ namespace msglib{
     public:
         UDPSender(uint16_t poer_number);
         UDPSender(std::string ip_address, uint16_t port_number);
-        void set_dst_info(DstInfo new_dst);
         void set_dst_info(std::string ip_address, uint16_t port_number);
         int send(void* msg, int size) const;
-        int send(void* msg, int size, DstInfo dst) const;
         int send(void* msg, int size, std::string ip_address, uint16_t port_number) const;
 
         template <typename T> int send(T& msg) const{
